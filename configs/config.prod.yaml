@@ -1,0 +1,23 @@
+appName: ai-mate-client-gateway
+env: prod
+
+http:
+  addr: ":8080"
+  readTimeout: 10s
+  writeTimeout: 60s
+  idleTimeout: 60s
+  shutdownTimeout: 10s
+
+log:
+  level: info
+  json: true
+
+core:
+  grpcTarget: "ai-mate-core:9090"
+  timeout: 10s
+
+observability:
+  enabled: true
+  otlpEndpoint: "http://otel-collector:4318"
+  sampleRatio: 1.0
+

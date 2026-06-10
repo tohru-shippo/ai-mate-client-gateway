@@ -1,0 +1,22 @@
+appName: ai-mate-client-gateway
+env: local
+
+http:
+  addr: ":8083"
+  readTimeout: 10s
+  writeTimeout: 60s
+  idleTimeout: 60s
+  shutdownTimeout: 10s
+
+log:
+  level: debug
+  json: false
+
+core:
+  grpcTarget: "127.0.0.1:9090"
+  timeout: 10s
+
+observability:
+  enabled: false
+  otlpEndpoint: "http://127.0.0.1:4318"
+  sampleRatio: 1.0
