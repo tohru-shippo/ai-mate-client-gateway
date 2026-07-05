@@ -10,9 +10,18 @@ import (
 	"syscall"
 	"time"
 
+	_ "github.com/tohru-shippo/ai-mate-client-gateway/docs"
 	"github.com/tohru-shippo/ai-mate-client-gateway/internal/app"
 )
 
+// @title           AI Mate Client Gateway API
+// @version         1.0
+// @description     用户端 API 网关（BFF），将 HTTP 请求翻译为 ai-mate-server gRPC 调用。
+// @BasePath        /api
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+// @description     Bearer 访问令牌，格式 "Bearer <token>"
 func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()

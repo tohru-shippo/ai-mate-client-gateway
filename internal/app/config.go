@@ -19,8 +19,8 @@ type Config struct {
 	HTTP HTTPConfig `mapstructure:"http"`
 	// 日志输出配置。
 	Log LogConfig `mapstructure:"log"`
-	// ai-mate-core gRPC 调用配置。
-	Core CoreConfig `mapstructure:"core"`
+	// ai-mate-server gRPC 调用配置。
+	Server ServerConfig `mapstructure:"server"`
 	// OpenTelemetry 链路追踪配置。
 	Observ ObservConfig `mapstructure:"observability"`
 }
@@ -47,11 +47,11 @@ type LogConfig struct {
 	JSON bool `mapstructure:"json"`
 }
 
-// ai-mate-core gRPC 调用配置。
-type CoreConfig struct {
-	// ai-mate-core gRPC 地址。
+// ai-mate-server gRPC 调用配置。
+type ServerConfig struct {
+	// ai-mate-server gRPC 地址。
 	GRPCTarget string `mapstructure:"grpcTarget"`
-	// core RPC 调用超时时间。
+	// server RPC 调用超时时间。
 	Timeout time.Duration `mapstructure:"timeout"`
 }
 
@@ -95,7 +95,7 @@ func bindEnvs(v *viper.Viper) {
 	_ = v.BindEnv("appName")
 	_ = v.BindEnv("env")
 	_ = v.BindEnv("http.addr")
-	_ = v.BindEnv("core.grpcTarget")
+	_ = v.BindEnv("server.grpcTarget")
 	_ = v.BindEnv("observability.enabled")
 	_ = v.BindEnv("observability.otlpEndpoint")
 	_ = v.BindEnv("observability.sampleRatio")
@@ -122,8 +122,8 @@ func setDefaults(v *viper.Viper) {
 	v.SetDefault("http.shutdownTimeout", "10s")
 	v.SetDefault("log.level", "info")
 	v.SetDefault("log.json", true)
-	v.SetDefault("core.grpcTarget", "127.0.0.1:9090")
-	v.SetDefault("core.timeout", "10s")
+	v.SetDefault("server.grpcTarget", "127.0.0.1:9090")
+	v.SetDefault("server.timeout", "10s")
 	v.SetDefault("observability.enabled", false)
 	v.SetDefault("observability.sampleRatio", 1.0)
 }

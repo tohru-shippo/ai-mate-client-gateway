@@ -16,12 +16,12 @@ const userPrincipalKey = "userPrincipal"
 type UserPrincipal struct {
 	// 用户 ID。
 	UserID string
-	// 用户名。
-	Username string
-	// 用户角色。
-	Role string
-	// 用户首选语言。
-	Language string
+	// 用户类型：normal、internal。
+	UserType string
+	// 用户状态：normal、restricted、archived。
+	Status string
+	// 当前登录会话 ID。
+	SessionID string
 }
 
 // 用户 token 鉴权能力。
@@ -41,7 +41,7 @@ func Auth(authenticator Authenticator) gin.HandlerFunc {
 		}
 		principal, err := authenticator.Authenticate(c.Request.Context(), token)
 		if err != nil {
-			response.FromError(c, err)
+			response.FromError(c, apperrors.FromCoreError(err, c.GetHeader("X-Language")))
 			c.Abort()
 			return
 		}

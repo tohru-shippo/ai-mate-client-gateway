@@ -1,4 +1,4 @@
-package core
+package auth
 
 import (
 	"context"
@@ -11,9 +11,9 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-// 用户端网关调用 ai-mate-core 的 gRPC 连接。
+// 用户端网关调用 ai-mate-server 的 gRPC 连接。
 type Client struct {
-	// ai-mate-core gRPC 地址。
+	// ai-mate-server gRPC 地址。
 	target string
 	// 单次 RPC 默认超时时间。
 	timeout time.Duration
@@ -21,7 +21,7 @@ type Client struct {
 	conn *grpc.ClientConn
 }
 
-// 创建 ai-mate-core gRPC 连接，连接失败时阻止服务启动。
+// 创建 ai-mate-server gRPC 连接，连接失败时阻止服务启动。
 func New(target string, timeout time.Duration) (*Client, error) {
 	if strings.TrimSpace(target) == "" {
 		return nil, fmt.Errorf("core grpc target is required")

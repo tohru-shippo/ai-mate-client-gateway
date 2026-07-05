@@ -7,7 +7,7 @@
 - 技术栈：Go 1.26.3 + Gin + Viper + slog + OpenTelemetry。
 - 职责：AI-Mate 用户端 HTTP 入口，面向 `chat-kiro`，目标路径统一为 `/api/*`。
 - 迁移期：按路径逐步承接 Java Gateway 现有 `/api/client/*` 和用户态 `/api/common/*` 能力；新路由优先使用去掉入口前缀后的 `/api/*`。
-- 当前阶段：先建立干净的 Client Gateway 架构，不做业务表直连，不做 Brain 直连；用户端能力按模块逐步通过 `ai-mate-core` gRPC 接入。
+- 当前阶段：先建立干净的 Client Gateway 架构，不做业务表直连，不做 Brain 直连；用户端能力按模块逐步通过 `ai-mate-server` gRPC 接入。
 
 ## 2. Git 工作流
 
@@ -22,7 +22,7 @@
 - `internal/app/`：配置、日志、链路追踪、HTTP 服务装配。
 - `internal/middleware/`：请求 ID、访问日志、用户鉴权和入口态中间件。
 - `internal/handler/`：HTTP 接口入参解析、响应投影、错误响应。
-- `internal/client/core/`：调用 `ai-mate-core` 的 gRPC client。
+- `internal/client/core/`：调用 `ai-mate-server` 的 gRPC client。
 - `internal/service/`：仅放用户鉴权、OAuth 回调、验证码、token 等入口态协议适配，不承载核心业务写表逻辑。
 - `internal/response/`：统一用户端响应结构。
 
@@ -34,7 +34,7 @@
 - 成功响应统一为 `{ "code": 0, "message": "success", "data": any }`。
 - 错误响应统一为 `{ "code": int, "message": string }`，不返回 `data`。
 - 用户鉴权、语言选择、当前用户上下文注入和 HTTP 响应投影在 Client Gateway 完成。
-- 核心业务读写通过 `ai-mate-core` 完成，不直接访问其他服务内部表。
+- 核心业务读写通过 `ai-mate-server` 完成，不直接访问其他服务内部表。
 
 ## 5. 错误与语言
 

@@ -16,7 +16,6 @@ func Logging(logger *slog.Logger) gin.HandlerFunc {
 
 		spanContext := trace.SpanContextFromContext(c.Request.Context())
 		attrs := []slog.Attr{
-			slog.String("requestId", GetRequestID(c)),
 			slog.String("method", c.Request.Method),
 			slog.String("path", c.FullPath()),
 			slog.Int("status", c.Writer.Status()),

@@ -12,8 +12,8 @@ log:
   level: info
   json: true
 
-core:
-  grpcTarget: "ai-mate-core:9090"
+server:
+  grpcTarget: "ai-mate-server:9090"
   timeout: 10s
 
 observability:

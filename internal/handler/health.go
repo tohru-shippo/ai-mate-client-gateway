@@ -27,12 +27,29 @@ func (h *HealthHandler) Register(r gin.IRouter) {
 	r.GET("/health", h.Health)
 }
 
-// GET /api/health 健康检查请求。
+// 健康检查响应数据。
+type HealthResponse struct {
+	// 服务名。
+	AppName string `json:"appName"`
+	// 运行环境。
+	Env string `json:"env"`
+	// 服务状态。
+	Status string `json:"status"`
+	// 服务启动时间。
+	StartedAt string `json:"startedAt"`
+}
+
+// @Summary      健康检查
+// @Description  返回服务名、环境、状态与启动时间
+// @Tags         health
+// @Produce      json
+// @Success      200 {object} response.Body{data=HealthResponse}
+// @Router       /health [get]
 func (h *HealthHandler) Health(c *gin.Context) {
-	response.Success(c, gin.H{
-		"appName":   h.appName,
-		"env":       h.env,
-		"status":    "ok",
-		"startedAt": h.started.Format(time.RFC3339),
+	response.Success(c, HealthResponse{
+		AppName:   h.appName,
+		Env:       h.env,
+		Status:    "ok",
+		StartedAt: h.started.Format(time.RFC3339),
 	})
 }

@@ -1,20 +1,14 @@
 package dto
 
-// 用户登录请求。
+// 用户登录请求，method 决定登录方式。
 type LoginRequest struct {
-	// 登录方式，例如 password、email_code、google_oauth。
+	// 登录方式：account_password、google、twitter。
 	Method string `json:"method"`
-	// 账号，账号密码登录时使用。
-	Account string `json:"account"`
-	// 手机号，手机验证码登录时使用。
-	Phone string `json:"phone"`
-	// 邮箱，邮箱验证码登录时使用。
+	// 邮箱，account_password 登录时使用。
 	Email string `json:"email"`
-	// 密码，账号密码登录时使用。
+	// 密码，account_password 登录时使用。
 	Password string `json:"password"`
-	// 验证码，验证码登录时使用。
-	Code string `json:"code"`
-	// OAuth 授权码。
+	// OAuth 授权码，google/twitter 登录时使用。
 	OAuthCode string `json:"oauthCode"`
 	// OAuth 重定向 URI。
 	RedirectURI string `json:"redirectUri"`
@@ -22,36 +16,52 @@ type LoginRequest struct {
 	CodeVerifier string `json:"codeVerifier"`
 	// 当前前端语言。
 	Language string `json:"language"`
+	// 用户地区。
+	Region string `json:"region"`
 }
 
 // 用户登录响应。
 type LoginResponse struct {
 	// 访问令牌。
 	AccessToken string `json:"accessToken"`
-	// 过期时间，单位秒。
+	// 访问令牌有效期，单位秒。
 	ExpiresIn int64 `json:"expiresIn"`
-	// 用户基础信息。
-	User User `json:"user"`
-}
-
-// 用户端接口暴露的用户基础信息。
-type User struct {
+	// 刷新令牌。
+	RefreshToken string `json:"refreshToken"`
+	// 刷新令牌有效期，单位秒。
+	RefreshExpiresIn int64 `json:"refreshExpiresIn"`
 	// 用户 ID。
-	ID string `json:"id"`
-	// 用户名。
-	Username string `json:"username"`
-	// 昵称。
-	Nickname string `json:"nickname"`
-	// 头像 URL。
-	Avatar string `json:"avatar"`
-	// 用户角色。
-	Role string `json:"role"`
-	// 用户首选语言。
-	Language string `json:"language"`
+	UserID string `json:"userId"`
+	// 用户类型：normal、internal。
+	UserType string `json:"userType"`
+	// 用户状态：normal、restricted、archived。
+	Status string `json:"status"`
+	// 是否新用户。
+	IsNewUser bool `json:"isNewUser"`
 }
 
-// 用户登出请求。
-type LogoutRequest struct {
-	// 当前访问令牌。
-	Token string `json:"token"`
+// 刷新令牌请求。
+type RefreshRequest struct {
+	// 刷新令牌。
+	RefreshToken string `json:"refreshToken"`
+}
+
+// 当前用户资料。
+type MyProfile struct {
+	// 用户 ID。
+	UserID string `json:"userId"`
+	// 用户类型。
+	UserType string `json:"userType"`
+	// 登录邮箱。
+	Email string `json:"email"`
+	// 展示名。
+	DisplayName string `json:"displayName"`
+	// 头像地址。
+	AvatarURL string `json:"avatarUrl"`
+	// 首选语言。
+	Language string `json:"language"`
+	// 地区。
+	Region string `json:"region"`
+	// 用户状态。
+	Status string `json:"status"`
 }

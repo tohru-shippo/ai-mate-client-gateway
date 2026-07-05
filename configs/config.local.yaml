@@ -12,7 +12,7 @@ log:
   level: debug
   json: false
 
-core:
+server:
   grpcTarget: "127.0.0.1:9090"
   timeout: 10s
 

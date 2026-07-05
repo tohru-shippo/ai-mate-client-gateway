@@ -1,0 +1,193 @@
+basePath: /api
+definitions:
+  dto.LoginRequest:
+    properties:
+      account:
+        description: 账号，账号密码登录时使用。
+        type: string
+      code:
+        description: 验证码，验证码登录时使用。
+        type: string
+      codeVerifier:
+        description: PKCE code_verifier。
+        type: string
+      email:
+        description: 邮箱，邮箱验证码登录时使用。
+        type: string
+      language:
+        description: 当前前端语言。
+        type: string
+      method:
+        description: 登录方式，当前支持 account_password。
+        type: string
+      oauthCode:
+        description: OAuth 授权码。
+        type: string
+      password:
+        description: 密码，账号密码登录时使用。
+        type: string
+      phone:
+        description: 手机号，手机验证码登录时使用。
+        type: string
+      redirectUri:
+        description: OAuth 重定向 URI。
+        type: string
+    type: object
+  dto.LoginResponse:
+    properties:
+      accessToken:
+        description: 访问令牌。
+        type: string
+      expiresIn:
+        description: 过期时间，单位秒。
+        type: integer
+      isNewUser:
+        description: 是否新用户。
+        type: boolean
+      user:
+        allOf:
+        - $ref: '#/definitions/dto.User'
+        description: 用户基础信息。
+    type: object
+  dto.User:
+    properties:
+      avatar:
+        description: 头像 URL。
+        type: string
+      id:
+        description: 用户 ID。
+        type: string
+      language:
+        description: 用户首选语言。
+        type: string
+      nickname:
+        description: 昵称。
+        type: string
+      role:
+        description: 用户角色。
+        type: string
+      username:
+        description: 用户名。
+        type: string
+    type: object
+  handler.HealthResponse:
+    properties:
+      appName:
+        description: 服务名。
+        type: string
+      env:
+        description: 运行环境。
+        type: string
+      startedAt:
+        description: 服务启动时间。
+        type: string
+      status:
+        description: 服务状态。
+        type: string
+    type: object
+  response.Body:
+    properties:
+      code:
+        description: 业务码，0 表示成功。
+        type: integer
+      data:
+        description: 响应数据。
+      message:
+        description: 响应消息。
+        type: string
+    type: object
+info:
+  contact: {}
+  description: 用户端 API 网关（BFF），将 HTTP 请求翻译为 ai-mate-core gRPC 调用。
+  title: AI Mate Client Gateway API
+  version: "1.0"
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: 使用账号密码 / 手机验证码 / 邮箱验证码 / OAuth 等方式登录，返回访问令牌与用户信息
+      parameters:
+      - description: 界面语言（zh-CN/zh-TW/en-US/ja-JP/ko-KR/ru-RU）
+        in: header
+        name: X-Language
+        type: string
+      - description: 登录参数
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Body'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.LoginResponse'
+              type: object
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/response.Body'
+        "401":
+          description: 未授权
+          schema:
+            $ref: '#/definitions/response.Body'
+      summary: 用户登录
+      tags:
+      - auth
+  /auth/logout:
+    post:
+      description: 注销当前访问令牌
+      parameters:
+      - description: Bearer <token>
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Body'
+        "401":
+          description: 未授权
+          schema:
+            $ref: '#/definitions/response.Body'
+      security:
+      - BearerAuth: []
+      summary: 用户登出
+      tags:
+      - auth
+  /health:
+    get:
+      description: 返回服务名、环境、状态与启动时间
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Body'
+            - properties:
+                data:
+                  $ref: '#/definitions/handler.HealthResponse'
+              type: object
+      summary: 健康检查
+      tags:
+      - health
+securityDefinitions:
+  BearerAuth:
+    description: Bearer 访问令牌，格式 "Bearer <token>"
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
