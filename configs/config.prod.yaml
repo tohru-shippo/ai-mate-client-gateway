@@ -17,7 +17,9 @@ server:
   timeout: 10s
 
 observability:
-  enabled: true
-  otlpEndpoint: "http://otel-collector:4318"
+  # 首次 v2 部署暂关链路追踪；网关 tracer 尚未支持 OpenObserve basic auth，
+  # 后续补齐 otlpUsername/otlpPassword 注入后再开启。
+  enabled: false
+  otlpEndpoint: "http://openobserve:5080/api/default/v1/traces"
   sampleRatio: 1.0
 
