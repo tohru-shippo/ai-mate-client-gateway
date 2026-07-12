@@ -2,7 +2,6 @@ package app
 
 import (
 	"fmt"
-	"os"
 	"strings"
 	"time"
 
@@ -65,19 +64,15 @@ type ObservConfig struct {
 	SampleRatio float64 `mapstructure:"sampleRatio"`
 }
 
-// 读取 yaml 配置、环境变量覆盖项，并完成配置校验。
+// Load 读取固定的生产 YAML 配置并完成配置校验。
 func Load() (*Config, error) {
 	v := viper.New()
-	v.SetConfigName(resolveConfigName())
+	v.SetConfigName("config.prod")
 	v.SetConfigType("yaml")
 	v.AddConfigPath("./configs")
 	v.AddConfigPath("../configs")
 	v.AddConfigPath("../../configs")
 	setDefaults(v)
-	v.SetEnvPrefix("CLIENT_GATEWAY")
-	v.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
-	v.AutomaticEnv()
-	bindEnvs(v)
 	if err := v.ReadInConfig(); err != nil {
 		return nil, fmt.Errorf("read config: %w", err)
 	}
@@ -89,27 +84,6 @@ func Load() (*Config, error) {
 		return nil, err
 	}
 	return &cfg, nil
-}
-
-func bindEnvs(v *viper.Viper) {
-	_ = v.BindEnv("appName")
-	_ = v.BindEnv("env")
-	_ = v.BindEnv("http.addr")
-	_ = v.BindEnv("server.grpcTarget")
-	_ = v.BindEnv("observability.enabled")
-	_ = v.BindEnv("observability.otlpEndpoint")
-	_ = v.BindEnv("observability.sampleRatio")
-}
-
-func resolveConfigName() string {
-	env := strings.TrimSpace(os.Getenv("CLIENT_GATEWAY_ENV"))
-	if env == "" {
-		env = strings.TrimSpace(os.Getenv("ENV"))
-	}
-	if env == "" {
-		env = "local"
-	}
-	return "config." + env
 }
 
 func setDefaults(v *viper.Viper) {
